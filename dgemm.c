@@ -11,7 +11,6 @@
 
 #define N 100
 
-
 double A[N * N], B[N * N], C[N * N];
 
 void dgemm_def(double *a, double *b, double *c, int n)
@@ -56,12 +55,22 @@ void init_matrix(double *a, double *b, double *c, int n)
 		for (j = 0; j < n; j++) 
 			for (k = 0; k < n; k++) 
 			{
-                		*(a + i * n + j) = 1.0;
-                		*(b + i * n + j) = 2.0;
+                		*(a + i * n + j) = rand() % 100;
+                		*(b + i * n + j) = rand() % 100;
                 		*(c + i * n + j) = 0.0;
 			}
 		
 	
+}
+
+void init_matrix_C(double *c, int n)
+{
+	int i, j, k;
+
+	for (i = 0; i < n; i++) 
+		for (j = 0; j < n; j++) 
+			for (k = 0; k < n; k++) 
+                		*(c + i * n + j) = 0.0;	
 }
 
 void print_matrix(double *a, int n)
@@ -81,47 +90,27 @@ int main(int argc, char **argv)
 {
     int i;
     double t;
-    		
+    
+    srand(time(0));
     init_matrix(A, B, C, N);
         
-    /*t = hpctimer_getwtime();
-    for (i = 0; i < NREPS; i++) 
-        dgemm_def(A, B, C, N);
-        //dgemm_transpose(A, B, C, N);
-        //dgemm_transpose2(A, B, C, N);
-        //dgemm_block(A, B, C, N);
-    
-    t = hpctimer_getwtime() - t;
-    t = t / NREPS;*/
-    
-    /*print_matrix(C, N);*/
-    
-    //printf("Elapsed time for dgemm_def: %.6f sec.\n", t);
-	
     t = hpctimer_getwtime();
-    for (i = 0; i < NREPS; i++) 
-		dgemm_transpose(A, B, C, N);
-
+    dgemm_def(A, B, C, N);
     t = hpctimer_getwtime() - t;
-    t = t / NREPS;
-    
-    /*print_matrix(C, N);*/
-    
-    printf("Elapsed time for dgem_transpose: %.6f sec.\n", t);
-
-	/*t = hpctimer_getwtime();
-    for (i = 0; i < NREPS; i++) 
-		dgemm_block(A, B, C, N);
-
+    printf("Elapsed time for dgemm_def: %.6f sec.\n", t);
+	
+    init_matrix_C(C, N);
+    t = hpctimer_getwtime();
+    dgemm_transpose(A, B, C, N);
     t = hpctimer_getwtime() - t;
-    t = t / NREPS;*/
-    
-    /*print_matrix(C, N);*/
-    
-    /*printf("Elapsed time for dgem_block: %.6f sec.\n", t);*/
+    printf("Elapsed time for dgemm_transpose: %.6f sec.\n", t); 
 
-
-
+    init_matrix_C(C, N);
+    t = hpctimer_getwtime();
+    dgemm_block(A, B, C, N);
+    t = hpctimer_getwtime() - t;
+    printf("Elapsed time for dgemm_block: %.6f sec.\n", t);
+	
     return 0;
 }
 
