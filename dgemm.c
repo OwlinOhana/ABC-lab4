@@ -9,10 +9,8 @@
 #include "hpctimer.h"
 #define BS 4
 
-enum { 
-    N = 512,
-    NREPS = 3
-};
+#define N 100
+
 
 double A[N * N], B[N * N], C[N * N];
 
@@ -31,8 +29,8 @@ void dgemm_transpose(double *a, double *b, double *c, int n)
     int i, j, k;
     
     for (i = 0; i < n; i++) 
-		for (k = 0; k < n; k++)
-  	    	for (j = 0; j < n; j++) 
+	for (k = 0; k < n; k++)
+  	    for (j = 0; j < n; j++) 
                 *(c + i * n + j) += *(a + i * n + k) * *(b + k * n + j);
 }
 
@@ -56,10 +54,11 @@ void init_matrix(double *a, double *b, double *c, int n)
 
 	for (i = 0; i < n; i++) 
 		for (j = 0; j < n; j++) 
-			for (k = 0; k < n; k++) {
-                *(a + i * n + j) = 1.0;
-                *(b + i * n + j) = 2.0;
-                *(c + i * n + j) = 0.0;
+			for (k = 0; k < n; k++) 
+			{
+                		*(a + i * n + j) = 1.0;
+                		*(b + i * n + j) = 2.0;
+                		*(c + i * n + j) = 0.0;
 			}
 		
 	
@@ -70,7 +69,8 @@ void print_matrix(double *a, int n)
 	int i, j;
 	
 	printf("Matrix:\n");
-	for (i = 0; i < n; i++) {
+	for (i = 0; i < n; i++) 
+	{
 		for (j = 0; j < n; j++) 
 			printf("%12.2f", *(a + i * n + j));
 		printf("\n");
